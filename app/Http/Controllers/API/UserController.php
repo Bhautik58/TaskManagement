@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\BaseController;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Exception;
@@ -60,7 +59,7 @@ class UserController extends BaseController
     public function show($id)
     {
         $user = User::find($id);
-        if(!$user) {
+        if (!$user) {
             return $this->sendResponse(false, 'User not found', null, 401);
         }
 
@@ -76,7 +75,19 @@ class UserController extends BaseController
      */
     public function update(Request $request, $id)
     {
-        //
+        $user = User::find($id);
+        if (!$user) {
+            return $this->sendResponse(false, 'User not found', null, 401);
+        }
+
+        try {
+            $user->update([
+                'name' => $request->name
+            ]);
+            return $this->sendResponse(true, 'User updated successfully!', $user);
+        } catch (Exception $e) {
+            return $this->sendError(false, $e->getMessage());
+        }
     }
 
     /**
@@ -88,17 +99,15 @@ class UserController extends BaseController
     public function destroy($id)
     {
         $user = User::find($id);
-        if(!$user) {
+        if (!$user) {
             return $this->sendResponse(false, 'User not found', null, 401);
         }
 
-        try{
+        try {
             $user->delete();
             return $this->sendResponse(true, 'User deleted successfully!', null);
-        } catch(Exception $e){
+        } catch (Exception $e) {
             return $this->sendError(false, $e->getMessage());
         }
-
-
     }
 }
