@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\TaskController;
 use App\Http\Controllers\API\UserController;
 use Illuminate\Http\Request;
@@ -20,5 +21,17 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::apiResource('user', UserController::class);
-Route::apiResource('task', TaskController::class);
+Route::post('login', [AuthController::class, 'login']);
+
+
+Route::post('/user', [UserController::class, 'store']); 
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('task', TaskController::class);
+    Route::get('/user', [UserController::class, 'index']);
+    Route::get('/user/{id}', [UserController::class, 'show']);
+    Route::put('/user/{id}', [UserController::class, 'update']);
+    Route::delete('/user/{id}', [UserController::class, 'destroy']);
+    Route::post('logout', [AuthController::class, 'logout']);
+});
+

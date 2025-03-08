@@ -18,7 +18,7 @@ class TaskController extends BaseController
      */
     public function index()
     {
-        return $this->sendResponse(true, "Task fetched successfully!", Task::all());
+        return $this->sendResponse(true, "Task fetched successfully!", Task::select('name', 'description', 'user_id')->get());
     }
 
     /**
